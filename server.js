@@ -23,10 +23,16 @@ db.once('open', () => console.error("Connected to Database"));
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/users");
 const eventRouter = require("./routes/events");
+const locationRouter = require("./routes/locations");
+const categoryRouter = require("./routes/categories");
+const roleRouter = require("./routes/roles");
 
 app.use('/', indexRouter);
 app.use('/users/', userRouter);
 app.use('/events/', eventRouter);
+app.use('/locations/', locationRouter);
+app.use('/categories/', categoryRouter);
+app.use('/roles/', roleRouter);
 
 
 app.listen(5000, function () {

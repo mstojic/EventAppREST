@@ -18,7 +18,26 @@ const upload = multer({
 
 //Get All Events
 router.get('/', async (req, res) => {
-    res.send('All Events');
+    let query = Event.find();
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
 });
 
 //New Event Route
@@ -77,7 +96,7 @@ async function renderNewPage(res, event, hasError = false) {
 
 function removeEventPoster(fileName) {
     fs.unlink(path.join(uploadPath, fileName), err => {
-        if(err) console.error(err);
+        if (err) console.error(err);
     });
 }
 

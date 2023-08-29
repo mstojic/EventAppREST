@@ -1,1 +1,6 @@
-Middle
+<h2>Recently Added</h2>
+<div>
+    <% events.forEach(event=> { %>
+        <img height="100" width="100" src="<%= event.posterImagePath %>">
+    <% }); %>
+</div>

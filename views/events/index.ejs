@@ -5,23 +5,35 @@
         <input class="form-control" id="name" name="name" value="<%= searchOptions.name %>">
     </div>
     <div class="mb-3">
-        <label for="date" class="form-label">Date</label>
-        <input class="form-control" id="date" name="date" value="<%= searchOptions.date %>">
+        <label for="dateAfter" class="form-label">After date</label>
+        <input type="date" class="form-control" id="dateAfter" name="dateAfter" value="<%= searchOptions.dateAfter %>">
+    </div>
+    <div class="mb-3">
+        <label for="dateBefore" class="form-label">Before date</label>
+        <input type="date" class="form-control" id="dateBefore" name="dateBefore"
+            value="<%= searchOptions.dateBefore %>">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 <table class="table">
     <thead>
         <tr>
+            <th scope="col"></th>
             <th scope="col">Name</th>
+            <th scope="col">Date</th>
         </tr>
     </thead>
     <tbody>
         <% events.forEach(event=> { %>
-        <tr>
-            <td><%= event.name %></td>
-        </tr>
+            <tr>
+                <td style="width: 20px;"><img height="100" width="100" src="<%= event.posterImagePath %>"></td>
+                <td>
+                    <%= event.name %>
+                </td>
+                <td>
+                    <%= event.date %>
+                </td>
+            </tr>
         <% }); %>
-
     </tbody>
 </table>

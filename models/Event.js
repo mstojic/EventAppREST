@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const path = require('path');
 const posterImagePath = "uploads/eventPosters";
 
 const eventSchema = new mongoose.Schema({
@@ -27,6 +27,12 @@ const eventSchema = new mongoose.Schema({
     eventPoster: {
         type: String,
         required: true
+    }
+});
+
+eventSchema.virtual('posterImagePath').get(function() {
+    if (this.eventPoster != null) {
+        return path.join('/', posterImagePath, this.eventPoster);
     }
 });
 

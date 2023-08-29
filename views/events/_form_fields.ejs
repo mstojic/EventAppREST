@@ -1,0 +1,33 @@
+<div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input class="form-control" id="name" name="name" value="<%= event.name %>" required>
+</div>
+<div class="mb-3">
+    <label for="date" class="form-label">Date</label>
+    <input type="date" class="form-control" id="date" name="date" min="<%= new Date().toISOString().split("T")[0] %>" 
+        value="<%= event.date == null ? '' : event.date.toISOString().split('T') %>" required>
+</div>
+<div class="mb-3">
+    <label for="organizer" class="form-label">Organizer</label>
+    <select id="organizer" name="organizer" class="form-select" required>
+        <% organizers.forEach(organizer=> { %>
+            <% if(organizer.id===event.organizer){ %>
+                <option selected label="<%= organizer.username %>" value="<%= organizer.id %>"></option>
+            <% } else{ %>
+                <option label="<%= organizer.username %>" value="<%= organizer.id %>"></option> 
+            <% } %>
+        <% }); %>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description"></textarea>
+</div>
+<div class="mb-3">
+    <label for="poster" class="form-label">Poster</label>
+    <input type="file" class="form-control" id="poster" name="poster" required>
+</div>
+<!-- <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="checkbox">
+    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+</div> -->

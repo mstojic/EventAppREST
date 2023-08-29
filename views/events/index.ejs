@@ -1,0 +1,27 @@
+<h2>Events</h2>
+<form action="/events" method="GET">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input class="form-control" id="name" name="name" value="<%= searchOptions.name %>">
+    </div>
+    <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input class="form-control" id="date" name="date" value="<%= searchOptions.date %>">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% events.forEach(event=> { %>
+        <tr>
+            <td><%= event.name %></td>
+        </tr>
+        <% }); %>
+
+    </tbody>
+</table>

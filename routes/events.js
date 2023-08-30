@@ -1,20 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const Event = require('../models/Event');
 const User = require('../models/User');
 
-const uploadPath = path.join('public', Event.posterImagePath);
 const imageTypes = ['image/jpeg', 'image/png', 'images/gif'];
-
-const upload = multer({
-    dest: uploadPath,
-    fileFilter: (req, file, callback) => {
-        callback(null, imageTypes.includes(file.mimetype))
-    }
-});
 
 //Get All Events
 router.get('/', async (req, res) => {
@@ -46,26 +35,22 @@ router.get('/new', async (req, res) => {
 });
 
 //Create Event
-router.post('/', upload.single('poster'), async (req, res) => {
-    const fileName = req.file != null ? req.file.filename : null;
+router.post('/', async (req, res) => {
     const event = new Event({
         name: req.body.name,
         date: req.body.date,
         organizer: req.body.organizer,
         description: req.body.description,
-        eventPoster: fileName
     });
+    savePoster(event, req.body.poster)
 
     try {
         const newEvent = await event.save();
         //res.redirect(`events/${newEvent.id}`);
         res.redirect('events');
     } catch (err) {
-        if (event.eventPoster != null) {
-            removeEventPoster(event.eventPoster)
-        }
-        //res.status(500).json({ message: err.message });
-        renderNewPage(res, event, true);
+        res.status(500).json({ message: err.message });
+        //renderNewPage(res, event, true);
     }
 });
 
@@ -94,10 +79,13 @@ async function renderNewPage(res, event, hasError = false) {
     }
 }
 
-function removeEventPoster(fileName) {
-    fs.unlink(path.join(uploadPath, fileName), err => {
-        if (err) console.error(err);
-    });
+function savePoster(event, posterEncoded) {
+    if (posterEncoded == null) return;
+    const poster = JSON.parse(posterEncoded);
+    if (poster != null && imageTypes.includes(poster.type)) {
+        event.eventPoster = new Buffer.from(poster.data, 'base64');
+        event.eventPosterType = poster.type;
+    }
 }
 
 module.exports = router;

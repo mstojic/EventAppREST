@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const path = require('path');
-const posterImagePath = "uploads/eventPosters";
 
 const eventSchema = new mongoose.Schema({
     name: {
@@ -25,16 +23,19 @@ const eventSchema = new mongoose.Schema({
         type: String,
     },
     eventPoster: {
+        type: Buffer,
+        required: true
+    },
+    eventPosterType: {
         type: String,
         required: true
     }
 });
 
 eventSchema.virtual('posterImagePath').get(function() {
-    if (this.eventPoster != null) {
-        return path.join('/', posterImagePath, this.eventPoster);
+    if (this.eventPoster != null && this.eventPosterType != null) {
+        return `data:${this.eventPosterType};charset=utf-8;base64,${this.eventPoster.toString('base64')}`;
     }
 });
 
 module.exports = mongoose.model('Event', eventSchema);
-module.exports.posterImagePath = posterImagePath;

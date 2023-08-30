@@ -19,15 +19,28 @@ router.get('/', async (req, res) => {
     }
 });
 
-//Get User
-/*router.get('/:id', getUser, (req, res) => {
-    res.json(res.user);
-});*/
-
 //New User Route
 router.get('/new', (req, res) => {
     res.render('users/new', { user: new User() });
 });
+
+//Get User
+router.get('/:id', (req, res) => {
+    res.send('Show User');
+});
+
+router.get('/:id/edit', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        res.render('users/edit', { user: user });
+    } catch {
+        res.redirect('/users')
+    }
+    
+});
+
+
+
 
 //Create User
 router.post('/', async (req, res) => {
@@ -39,7 +52,7 @@ router.post('/', async (req, res) => {
     try {
         const newUser = await user.save();
         //res.status(201).json(newUser);
-        res.redirect('/');
+        res.redirect('users');
     } catch (err) {
         res.render('users/new', {
             user: user,
@@ -49,28 +62,41 @@ router.post('/', async (req, res) => {
 });
 
 //Update User
-router.patch('/:id', getUser, async (req, res) => {
-    if (req.body.username != null) {
-        res.user.username = req.body.username;
-    }
-    if (req.body.password != null) {
-        res.user.password = req.body.password;
-    }
+router.put('/:id', async (req, res) => {
+    let user;
     try {
-        const updatedUser = await res.user.save();
-        res.json(updatedUser)
+        user = await User.findById(req.params.id);
+        user.username = req.body.username;
+        user.password = req.body.password;
+        await user.save();
+        //res.status(201).json(newUser);
+        res.redirect('/users');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        if (user == null) {
+            res.redirect('/');
+        } else {
+            res.render('users/new', {
+                user: user,
+                errorMessage: 'Error updating User'
+            });
+        }
     }
 });
 
 //Delete User
-router.delete('/:id', getUser, async (req, res) => {
+router.delete('/:id', async (req, res) => {
+    let user;
     try {
-        await res.user.deleteOne();
-        res.json({ message: 'Deleted user' });
+        user = await User.findById(req.params.id);
+        await user.deleteOne({_id: req.params.id});
+        //res.status(201).json(newUser);
+        res.redirect('/users');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (user == null) {
+            res.redirect('/');
+        } else {
+            return res.status(500).json({ message: err.message });
+        }
     }
 });
 

@@ -1,0 +1,30 @@
+<h2><%= user.username %></h2>
+<a href="/users/<%= user.id %>/edit">Edit</a>
+<%- include('../partials/deleteForm', {
+    url: `/users/${user.id}`
+}) %>
+<% if (eventsByUser.length > 0) { %>
+    <h2>Events organized</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% eventsByUser.forEach(event=> { %>
+                <tr>
+                    <td style="width: 20px;"><img height="100" width="100" src="<%= event.posterImagePath %>"></td>
+                    <td>
+                        <%= event.name %>
+                    </td>
+                    <td>
+                        <%= event.date %>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>

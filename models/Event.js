@@ -19,6 +19,16 @@ const eventSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
+    },
+    location: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Location'
+    },
     description: {
         type: String,
     },

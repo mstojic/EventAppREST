@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User')
+const Event = require('../models/Event')
 
 //Get All Users
 router.get('/', async (req, res) => {
@@ -24,23 +25,19 @@ router.get('/new', (req, res) => {
     res.render('users/new', { user: new User() });
 });
 
-//Get User
-router.get('/:id', (req, res) => {
-    res.send('Show User');
-});
-
-router.get('/:id/edit', async (req, res) => {
+//Show User
+router.get('/:id', async (req, res) => {
     try {
-        const user = await User.findById(req.params.id)
-        res.render('users/edit', { user: user });
-    } catch {
-        res.redirect('/users')
+        const user = await User.findById(req.params.id);
+        const events = await Event.find({ organizer: user.id }).exec();
+        res.render('users/show', { 
+            user: user, 
+            eventsByUser: events
+        });
+    } catch (err) {
+        res.json({ message: err.message });
     }
-    
 });
-
-
-
 
 //Create User
 router.post('/', async (req, res) => {
@@ -59,6 +56,17 @@ router.post('/', async (req, res) => {
             errorMessage: 'Error creating User'
         })
     }
+});
+
+//Edit User
+router.get('/:id/edit', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        res.render('users/edit', { user: user });
+    } catch {
+        res.redirect('/users')
+    }
+    
 });
 
 //Update User
@@ -100,7 +108,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-async function getUser(req, res, next) {
+/*async function getUser(req, res, next) {
     let user;
     try {
         if (id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -116,6 +124,6 @@ async function getUser(req, res, next) {
 
     res.user = user;
     next();
-}
+}*/
 
 module.exports = router;

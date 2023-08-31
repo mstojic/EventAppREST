@@ -10,12 +10,21 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <% locations.forEach(location=> { %>
         <tr>
             <td><%= location.name %></td>
+            <td>
+                <div>
+                    <a href="/locations/<%= location.id %>/edit">Edit</a>
+                    <%- include('../partials/deleteForm', {
+                        url: `/locations/${location.id}`
+                    }) %>
+                </div>
+            </td>
         </tr>
         <% }); %>
 

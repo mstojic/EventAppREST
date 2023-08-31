@@ -19,11 +19,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-//Get Location
-/*router.get('/:id', getLocation, (req, res) => {
-    res.json(res.location);
-});*/
-
 //New Location Route
 router.get('/new', (req, res) => {
     res.render('locations/new', { location: new Location() });
@@ -47,26 +42,52 @@ router.post('/', async (req, res) => {
     }
 });
 
-//Update Location
-router.patch('/:id', getLocation, async (req, res) => {
-    if (req.body.name != null) {
-        res.location.name = req.body.name;
-    }
+//Edit Location
+router.get('/:id/edit', async (req, res) => {
     try {
-        const updatedLocation = await res.location.save();
-        res.json(updatedLocation)
+        const location = await Location.findById(req.params.id)
+        res.render('locations/edit', { location: location });
+    } catch {
+        res.redirect('/locations')
+    }
+    
+});
+
+//Update Location
+router.put('/:id', async (req, res) => {
+    let location;
+    try {
+        location = await Location.findById(req.params.id);
+        location.name = req.body.name;
+        await location.save();
+        //res.status(201).json(newUser);
+        res.redirect('/locations');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        if (location == null) {
+            res.redirect('/');
+        } else {
+            res.render('locations/new', {
+                location: location,
+                errorMessage: 'Error updating Location'
+            });
+        }
     }
 });
 
 //Delete Location
-router.delete('/:id', getLocation, async (req, res) => {
+router.delete('/:id', async (req, res) => {
+    let location;
     try {
-        await res.location.deleteOne();
-        res.json({ message: 'Deleted location' });
+        location = await Location.findById(req.params.id);
+        await location.deleteOne({_id: req.params.id});
+        //res.status(201).json(newUser);
+        res.redirect('/locations');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (location == null) {
+            res.redirect('/');
+        } else {
+            return res.status(500).json({ message: err.message });
+        }
     }
 });
 

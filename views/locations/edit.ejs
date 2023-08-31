@@ -1,0 +1,5 @@
+<h2>Edit Location</h2>
+<form action="/locations/<%= location.id %>?_method=PUT" method="POST">
+    <%- include('_form_fields') %>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -10,12 +10,21 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <% roles.forEach(role=> { %>
         <tr>
             <td><%= role.name %></td>
+            <td>
+                <div>
+                    <a href="/roles/<%= role.id %>/edit">Edit</a>
+                    <%- include('../partials/deleteForm', {
+                        url: `/roles/${role.id}`
+                    }) %>
+                </div>
+            </td>
         </tr>
         <% }); %>
 

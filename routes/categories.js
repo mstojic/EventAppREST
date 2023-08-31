@@ -19,11 +19,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-//Get Category
-/*router.get('/:id', getCategory, (req, res) => {
-    res.json(res.category);
-});*/
-
 //New Category Route
 router.get('/new', (req, res) => {
     res.render('categories/new', { category: new Category() });
@@ -47,26 +42,52 @@ router.post('/', async (req, res) => {
     }
 });
 
-//Update Category
-router.patch('/:id', getCategory, async (req, res) => {
-    if (req.body.name != null) {
-        res.category.name = req.body.name;
-    }
+//Edit Category
+router.get('/:id/edit', async (req, res) => {
     try {
-        const updatedCategory = await res.category.save();
-        res.json(updatedCategory)
+        const category = await Category.findById(req.params.id)
+        res.render('categories/edit', { category: category });
+    } catch {
+        res.redirect('/categories')
+    }
+    
+});
+
+//Update Category
+router.put('/:id', async (req, res) => {
+    let category;
+    try {
+        category = await Category.findById(req.params.id);
+        category.name = req.body.name;
+        await category.save();
+        //res.status(201).json(newUser);
+        res.redirect('/categories');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        if (category == null) {
+            res.redirect('/');
+        } else {
+            res.render('categories/new', {
+                category: category,
+                errorMessage: 'Error updating Category'
+            });
+        }
     }
 });
 
 //Delete Category
-router.delete('/:id', getCategory, async (req, res) => {
+router.delete('/:id', async (req, res) => {
+    let category;
     try {
-        await res.category.deleteOne();
-        res.json({ message: 'Deleted category' });
+        category = await Category.findById(req.params.id);
+        await category.deleteOne({_id: req.params.id});
+        //res.status(201).json(newUser);
+        res.redirect('/categories');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (category == null) {
+            res.redirect('/');
+        } else {
+            return res.status(500).json({ message: err.message });
+        }
     }
 });
 

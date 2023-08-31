@@ -21,6 +21,7 @@
             <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Date</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +32,16 @@
                     <%= event.name %>
                 </td>
                 <td>
-                    <%= event.date %>
+                    <%= event.date.toDateString("ddMMyyyy") %>
+                </td>
+                <td>
+                    <div>
+                        <a href="/events/<%= event.id %>">View</a>
+                        <a href="/events/<%= event.id %>/edit">Edit</a>
+                        <%- include('../partials/deleteForm', {
+                            url: `/events/${event.id}`
+                        }) %>
+                    </div>
                 </td>
             </tr>
         <% }); %>

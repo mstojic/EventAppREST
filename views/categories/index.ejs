@@ -10,12 +10,21 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <% categories.forEach(category=> { %>
         <tr>
             <td><%= category.name %></td>
+            <td>
+                <div>
+                    <a href="/categories/<%= category.id %>/edit">Edit</a>
+                    <%- include('../partials/deleteForm', {
+                        url: `/categories/${category.id}`
+                    }) %>
+                </div>
+            </td>
         </tr>
         <% }); %>
 

@@ -47,26 +47,52 @@ router.post('/', async (req, res) => {
     }
 });
 
-//Update Role
-router.patch('/:id', getRole, async (req, res) => {
-    if (req.body.name != null) {
-        res.role.name = req.body.name;
-    }
+//Edit Role
+router.get('/:id/edit', async (req, res) => {
     try {
-        const updatedRole = await res.role.save();
-        res.json(updatedRole)
+        const role = await Role.findById(req.params.id)
+        res.render('roles/edit', { role: role });
+    } catch {
+        res.redirect('/roles')
+    }
+    
+});
+
+//Update Role
+router.put('/:id', async (req, res) => {
+    let role;
+    try {
+        role = await Role.findById(req.params.id);
+        role.name = req.body.name;
+        await role.save();
+        //res.status(201).json(newUser);
+        res.redirect('/roles');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        if (role == null) {
+            res.redirect('/');
+        } else {
+            res.render('roles/new', {
+                role: role,
+                errorMessage: 'Error updating Role'
+            });
+        }
     }
 });
 
 //Delete Role
-router.delete('/:id', getRole, async (req, res) => {
+router.delete('/:id', async (req, res) => {
+    let role;
     try {
-        await res.role.deleteOne();
-        res.json({ message: 'Deleted role' });
+        role = await Role.findById(req.params.id);
+        await role.deleteOne({_id: req.params.id});
+        //res.status(201).json(newUser);
+        res.redirect('/roles');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (role == null) {
+            res.redirect('/');
+        } else {
+            return res.status(500).json({ message: err.message });
+        }
     }
 });
 

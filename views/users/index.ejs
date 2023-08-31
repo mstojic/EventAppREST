@@ -21,9 +21,9 @@
                 <div>
                     <a href="/users/<%= user.id %>">View</a>
                     <a href="/users/<%= user.id %>/edit">Edit</a>
-                    <form method="POST" action="/users/<%= user.id %>?_method=DELETE">
-                        <button type="submit">Delete</button>
-                    </form>
+                    <%- include('../partials/deleteForm', {
+                        url: `/users/${user.id}`
+                    }) %>
                 </div>
             </td>
         </tr>

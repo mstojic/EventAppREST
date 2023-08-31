@@ -1,17 +1,17 @@
 <div class="mb-3">
     <label for="name" class="form-label">Name</label>
-    <input class="form-control" id="name" name="name" value="<%= event.name %>" required>
+    <input class="form-control" id="name" name="name" value="<%= event.name %>" required autocomplete="off">
 </div>
 <div class="mb-3">
     <label for="date" class="form-label">Date</label>
     <input type="date" class="form-control" id="date" name="date" min="<%= new Date().toISOString().split("T")[0] %>" 
-        value="<%= event.date == null ? '' : event.date.toISOString().split('T') %>" required>
+        value="<%= event.date == null ? '' : event.date.toISOString().slice(0, 10) %>" required>
 </div>
 <div class="mb-3">
     <label for="organizer" class="form-label">Organizer</label>
-    <select id="organizer" name="organizer" class="form-select" required>
+    <select id="organizer" name="organizer" class="form-select" value="<%= event.organizer %>" required>
         <% organizers.forEach(organizer=> { %>
-            <% if(organizer.id===event.organizer){ %>
+            <% if(organizer.id == event.organizer){ %>
                 <option selected label="<%= organizer.username %>" value="<%= organizer.id %>"></option>
             <% } else{ %>
                 <option label="<%= organizer.username %>" value="<%= organizer.id %>"></option> 
@@ -20,13 +20,38 @@
     </select>
 </div>
 <div class="mb-3">
-    <label for="description" class="form-label">Description</label>
-    <textarea class="form-control" id="description" name="description"></textarea>
+    <label for="category" class="form-label">Category</label>
+    <select id="category" name="category" class="form-select" value="<%= event.category %>" required>
+        <% categories.forEach(category=> { %>
+            <% if(category.id == event.category){ %>
+                <option label="<%= category.name %>" value="<%= category.id %>" selected></option>
+            <% } else{ %>
+                <option label="<%= category.name %>" value="<%= category.id %>"></option> 
+            <% } %>
+        <% }); %>
+    </select>
 </div>
 <div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <select id="location" name="location" class="form-select" value="<%= event.location %>" required>
+        <% locations.forEach(location=> { %>
+            <% if(location.id == event.location){ %>
+                <option selected label="<%= location.name %>" value="<%= location.id %>"></option>
+            <% } else{ %>
+                <option label="<%= location.name %>" value="<%= location.id %>"></option> 
+            <% } %>
+        <% }); %>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description"><%= event.description %></textarea>
+</div>
+<div class="mb-3" style="width: 300px; height: 300px;">
     <label for="poster" class="form-label">Poster</label>
     <input type="file" class="filepond" id="poster" name="poster" required>
 </div>
+<div style="height: 50px;"></div>
 <!-- <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="checkbox">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 app.use(express.json());
 
-router.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const username = req.body.username;
     const user = { name: username };
 

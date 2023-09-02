@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
-const methodOVerride = require('method-override')
+const methodOverride = require('method-override')
 const mongoose = require('mongoose', { useNewUrlParser: true });
 
 app.set('view engine', 'ejs');
@@ -12,7 +12,7 @@ app.set('views', __dirname + '/views');
 app.set('layout', 'layouts/layout');
 
 app.use(expressLayouts);
-app.use(methodOVerride('_method'));
+app.use(methodOverride('_method'));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false}));

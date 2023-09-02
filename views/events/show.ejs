@@ -8,4 +8,12 @@
     url: `/events/${event.id}`
 }) %>
 <a href="/users/<%= event.organizer.id %>">View organizer</a> 
-
+<% if(reserved == false) { %>
+<form action="/events/reserve/<%= event.id %>" method="POST">
+    <button type="submit" class="btn btn-primary">Reserve</button>
+</form>
+<% } else {%>
+<form method="POST" action="/events/unreserve/<%= event.id %>?_method=DELETE">
+    <button type="submit">Unreserve</button>
+</form>
+<% } %>

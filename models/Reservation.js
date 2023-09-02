@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Event = require('./Event')
-const Event = require('./User')
+const User = require('./User')
 
 const reservationSchema = new mongoose.Schema({
     event: {

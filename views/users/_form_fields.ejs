@@ -6,6 +6,14 @@
     <label for="password" class="form-label">Password</label>
     <input type="password" class="form-control" id="password" name="password" value="<%= user.password %>">
 </div>
+<div class="mb-3">
+    <label for="role" class="form-label">Role</label>
+    <select id="role" name="role" class="form-select" required>
+        <option label="Korisnik" value="User" selected></option>
+        <option label="Organizator" value="Organiser"></option>
+        <option label="Administrator" value="Admin"></option>
+    </select>
+</div>
 <!-- <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="checkbox">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>

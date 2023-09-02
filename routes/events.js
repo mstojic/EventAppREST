@@ -4,6 +4,7 @@ const Event = require('../models/Event');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const Location = require('../models/Location');
+const Reservation = require('../models/Reservation');
 
 const imageTypes = ['image/jpeg', 'image/png', 'images/gif'];
 
@@ -40,9 +41,21 @@ router.get('/new', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const event = await Event.findById(req.params.id).populate('organizer').exec();
-        const user = await User.findById(event.organizer);
+        let reservation;
+        if (req.user != null) {
+            reservation = await Reservation.findOne({ event: event.id, user: req.user.id });
+        }
+
+        let reserved = false;
+        if(reservation == null && req.user == true) {
+            reserved = false;
+        } else if (reservation != null) {
+            reserved = true;
+        }
+        
         res.render('events/show', { 
-            event: event
+            event: event,
+            reserved: reserved
         });
     } catch (err) {
         res.json({ message: err.message });
@@ -126,15 +139,37 @@ router.delete('/:id', async (req, res) => {
 });
 
 //Reserve Event
-router.post('/:id/reserve', async (req, res) => {
+router.post('/reserve/:id', checkAuthenticated, async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
-        const newEvent = await event.save();
+        const user = await User.findById(req.user.id)
+        const reservation = new Reservation({
+            event: event.id,
+            user: user.id
+        });
+        const newReservation = await reservation.save();
         //res.redirect(`events/${newEvent.id}`);
-        res.redirect('events');
+        res.redirect('/events');
     } catch (err) {
-        //res.status(500).json({ message: err.message });
-        renderNewPage(res, event, false, true);
+        res.status(500).json({ message: err.message });
+        //renderNewPage(res, event, false, true);
+    }
+});
+
+//Unreserve Event
+router.delete('/unreserve/:id', async (req, res) => {
+    let reservation;
+    try {
+        reservation = await Reservation.findOne({event: req.params.id, user: req.user.id});
+        await reservation.deleteOne({_id: reservation.id });
+        //res.status(201).json(newUser);
+        res.redirect('/events');
+    } catch (err) {
+        if (reservation == null) {
+            res.redirect('/');
+        } else {
+            return res.status(500).json({ message: err.message });
+        }
     }
 });
 
@@ -176,6 +211,13 @@ function savePoster(event, posterEncoded) {
         event.eventPoster = new Buffer.from(poster.data, 'base64');
         event.eventPosterType = poster.type;
     }
+}
+
+function checkAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
 }
 
 module.exports = router;

@@ -8,14 +8,14 @@ function initialize(passport, getUserByUsername, getUserById) {
     const authenticateUser = async (username, password, done) => {
         const user = await getUserByUsername(username)
         if (user == null) {
-            return done(null, false, { message: 'No user with that email' })
+            return done(null, false, { message: 'Korisničko ime koje ste unijeli ne postoji.' })
         }
 
         try {
             if (await bcrypt.compare(password, user.password)) {
                 return done(null, user)
             } else {
-                return done(null, false, { message: 'Password incorrect' })
+                return done(null, false, { message: 'Netočna lozinka.' })
             }
         } catch (e) {
             return done(e)

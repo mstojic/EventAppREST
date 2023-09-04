@@ -1,32 +1,43 @@
-<h2>Categories</h2>
-<form action="/categories" method="GET">
-    <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input class="form-control" id="name" name="name" value="<%= searchOptions.name %>">
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th><a href="/categories/new">Add Category</a></th>
-        </tr>
-    </thead>
-    <tbody>
-        <% categories.forEach(category=> { %>
-        <tr>
-            <td><%= category.name %></td>
-            <td>
-                <div>
-                    <a href="/categories/<%= category.id %>/edit">Edit</a>
-                    <%- include('../partials/deleteForm', {
-                        url: `/categories/${category.id}`
-                    }) %>
-                </div>
-            </td>
-        </tr>
-        <% }); %>
-
-    </tbody>
-</table>
+<div class="float-div">
+    <h3 class="site-header">KATEGORIJE</h3>
+    <br>
+    <form class="d-flex" action="/categories" method="GET">
+        <div class="mb-3 mx-2 flex-fill">
+            <label for="name" class="form-label">Naziv</label>
+            <input class="form-control" id="name" name="name" value="<%= searchOptions.name %>">
+        </div>
+        <div class="mb-3 mx-2">
+            <label class="form-label">&nbsp;</label>
+            <button type="submit" class="form-control btn btn-primary">Pretraga</button>
+        </div>
+    </form>
+</div>
+<div class="float-div">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Kategorija</th>
+                <th style="width: 100px;">
+                    <div class="d-flex justify-content-end">
+                        <a href="/categories/new" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <% categories.forEach(category=> { %>
+            <tr>
+                <td><%= category.name %></td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <a href="/categories/<%= category.id %>/edit" class="btn btn-primary me-2"><i class="bi bi-pencil"></i></a>
+                        <%- include('../partials/deleteForm', {
+                            url: `/categories/${category.id}`
+                        }) %>
+                    </div>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

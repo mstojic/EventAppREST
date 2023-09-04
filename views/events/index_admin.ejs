@@ -1,0 +1,62 @@
+<div class="float-div">
+    <h3 class="site-header">DOGAĐAJI (ADMIN)</h3>
+    <br>
+    <form class="d-flex" action="/events" method="GET">
+        <div class="mb-3 mx-2 flex-fill">
+            <label for="name" class="form-label">Naziv</label>
+            <input class="form-control" id="name" name="name" value="<%= searchOptions.name %>">
+        </div>
+        <div class="mb-3 mx-2 flex-fill">
+            <label for="dateAfter" class="form-label">Nakon datuma</label>
+            <input type="date" class="form-control" id="dateAfter" name="dateAfter"
+                value="<%= searchOptions.dateAfter %>">
+        </div>
+        <div class="mb-3 mx-2 flex-fill">
+            <label for="dateBefore" class="form-label">Prije datuma</label>
+            <input type="date" class="form-control" id="dateBefore" name="dateBefore"
+                value="<%= searchOptions.dateBefore %>">
+        </div>
+        <div class="mb-3 mx-2">
+            <label class="form-label">&nbsp;</label>
+            <button type="submit" class="form-control btn btn-primary">Pretraga</button>
+        </div>
+    </form>
+</div>
+<div class="float-div">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Naziv</th>
+                <th scope="col">Datum</th>
+                <th scope="col">Lokacija</th>
+                <th scope="col">Kategorija</th>
+                <th scope="col">Kreirano</th>
+                <th style="width: 100px;">
+                    <div class="d-flex justify-content-end">
+                        <a href="/events/new" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <% events.forEach(event=> { %>
+            <tr>
+                <td><%= event.name %></td>
+                <td><%= event.date.toDateString("ddMMyyyy") %></td>
+                <td><%= event.location.name %></td>
+                <td><%= event.category.name %></td>
+                <td><%= event.createdAt.toDateString("ddMMyyyy")  %></td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <a href="/events/<%= event.id %>" class="btn btn-primary me-2"><i class="bi bi-eye"></i></a>
+                        <a href="/events/<%= event.id %>/edit" class="btn btn-primary me-2"><i class="bi bi-pencil"></i></a>
+                        <%- include('../partials/deleteForm', {
+                            url: `/events/${event.id}`
+                        }) %>
+                    </div>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

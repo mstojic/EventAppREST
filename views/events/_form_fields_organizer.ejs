@@ -1,0 +1,56 @@
+<input type="hidden" id="organizer" name="organizer" value="<%= user.id %>">
+<div class="float-div event-div d-flex">
+    <div class="event-left">
+        <div class="mb-3" style="height: 360px;">
+            <input type="file" class="filepond" id="poster" name="poster" required>
+        </div>
+    </div>
+    <div class="event-right ps-5 pe-3 py-2">
+        <h3 class="fw-bold">Novi događaj</h3>
+        <hr/>
+        <div class="d-flex">
+            <div class="mb-3 pe-2 flex-fill">
+                <label for="name" class="form-label">Naziv događaja</label>
+                <input class="form-control" id="name" name="name" value="<%= event.name %>" required autocomplete="off">
+            </div>
+            <div class="mb-3 ps-2 flex-fill">
+                <label for="date" class="form-label">Datum</label>
+                <input type="date" class="form-control" id="date" name="date" min="<%= new Date().toISOString().split("T")[0] %>" 
+                    value="<%= event.date == null ? '' : event.date.toISOString().slice(0, 10) %>" required>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div class="mb-3 pe-2 flex-fill">
+                <label for="category" class="form-label">Kategorija</label>
+                <select id="category" name="category" class="form-select" value="<%= event.category %>" required>
+                    <% categories.forEach(category=> { %>
+                        <% if(category.id == event.category){ %>
+                            <option label="<%= category.name %>" value="<%= category.id %>" selected></option>
+                        <% } else{ %>
+                            <option label="<%= category.name %>" value="<%= category.id %>"></option> 
+                        <% } %>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="mb-3 ps-2 flex-fill">
+                <label for="location" class="form-label">Lokacija</label>
+                <select id="location" name="location" class="form-select" value="<%= event.location %>" required>
+                    <% locations.forEach(location=> { %>
+                        <% if(location.id == event.location){ %>
+                            <option selected label="<%= location.name %>" value="<%= location.id %>"></option>
+                        <% } else{ %>
+                            <option label="<%= location.name %>" value="<%= location.id %>"></option> 
+                        <% } %>
+                    <% }); %>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Opis</label>
+            <textarea class="form-control" id="description" name="description"><%= event.description %></textarea>
+        </div>
+        <div class="view-btn mb-2 me-2">
+            <button type="submit" class="btn btn-primary">Pohrana</button>
+        </div>
+    </div>
+</div>

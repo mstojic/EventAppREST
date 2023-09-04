@@ -1,6 +1,7 @@
 <div class="float-div">
     <h3 class="site-header">DOGAĐAJI</h3>
     <br>
+
     <form class="d-flex" action="/events" method="GET">
         <div class="mb-3 mx-2 flex-fill">
             <label for="name" class="form-label">Naziv</label>
@@ -19,6 +20,10 @@
         <div class="mb-3 mx-2">
             <label class="form-label">&nbsp;</label>
             <button type="submit" class="form-control btn btn-primary">Pretraga</button>
+        </div>
+        <div class="mb-3 mx-2 ml-5">
+            <label class="form-label">&nbsp;</label>
+            <a href="/events/new_organizer" class="form-control btn btn-success">Dodajte događaj&nbsp;&nbsp; <i class="bi bi-calendar-plus"></i></a>
         </div>
     </form>
 </div>
@@ -54,9 +59,21 @@
                 <label>Organizator:&nbsp; </label>
                 <p><%= event.organizer.username %></p>
             </div>
-            <div class="view-btn mb-2 me-2">
-                <a href="/events/<%= event.id %>" class="btn btn-primary">Pogledajte događaj</a>
+            <div class="view-btn mb-2 me-2 d-flex">
+                <div>
+                    <a href="/events/<%= event.id %>" class="btn btn-primary">Pogledajte događaj</a>
+                </div>
+                <div class="ms-2">
+                    <a href="/events/<%= event.id %>/edit_organizer" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
+                </div>
+                <div class="ms-2">
+
+                        <%- include('../partials/deleteForm', {
+                            url: `/events/${event.id}`
+                        }) %>
+                </div>
             </div>
+            
         </div>
     </div>
 <% }); %>

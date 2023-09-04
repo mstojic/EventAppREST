@@ -1,20 +1,16 @@
 <div class="mb-3">
-    <label for="username" class="form-label">Username</label>
+    <label for="username" class="form-label">Korisničko ime</label>
     <input type="email" class="form-control" id="username" name="username" value="<%= user.username %>">
 </div>
 <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
+    <label for="password" class="form-label">Lozinka</label>
     <input type="password" class="form-control" id="password" name="password" value="<%= user.password %>">
 </div>
 <div class="mb-3">
-    <label for="role" class="form-label">Role</label>
+    <label for="role" class="form-label">Uloga</label>
     <select id="role" name="role" class="form-select" required>
         <option label="Korisnik" value="User" selected></option>
         <option label="Organizator" value="Organiser"></option>
         <option label="Administrator" value="Admin"></option>
     </select>
 </div>
-<!-- <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="checkbox">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-</div> -->

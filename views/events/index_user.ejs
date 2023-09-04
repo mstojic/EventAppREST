@@ -60,3 +60,31 @@
         </div>
     </div>
 <% }); %>
+<!-- <table class="table">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% events.forEach(event=> { %>
+            <tr>
+                <td style="width: 20px;"><img height="100" width="100" src="<%= event.posterImagePath %>"></td>
+                <td>
+                    <%= event.name %>
+                </td>
+                <td>
+                    <%= event.date.toDateString("ddMMyyyy") %>
+                </td>
+                <td>
+                    <div>
+                        <a href="/events/<%= event.id %>">View</a>
+                    </div>
+                </td>
+            </tr>
+            <% }); %>
+    </tbody>
+</table> -->

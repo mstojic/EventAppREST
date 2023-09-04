@@ -68,22 +68,25 @@
                     <!-- <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                     </li> -->
-
-                    <% if(user) { %>
-                        <li class="nav-item">
-                            <form method="POST" action="/logout?_method=DELETE">
-                                <button type="submit">Logout</button>
-                            </form>
-                        </li>
-                    <% } %>
-
-                    <% if(!user) { %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
-                        </li>
-                    <% } %>
                     
                 </ul>
+                <div>
+                    <div class="ms-auto">
+                        <% if(user) { %>
+
+                            <form method="POST" action="/logout?_method=DELETE">
+                                <button type="submit" class="btn btn-danger">Odjava</button>
+                            </form>
+
+                        <% } %>
+
+                        <% if(!user) { %>
+
+                            <a class="btn btn-success" href="/login">Prijava</a>
+
+                        <% } %>
+                    </div>
+                </div>
                 <!-- <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>

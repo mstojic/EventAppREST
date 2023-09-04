@@ -1,0 +1,125 @@
+body{
+    background-image: url("../images/Background.jpg");
+    background-attachment: fixed;
+}
+
+/*Navigacijska traka*/
+.navbar {
+    background-color: white;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+/*Login i Register*/
+.login-form, .register-form {
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 150px;
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.login-error {
+    background-color: rgb(255, 69, 69);
+    padding: 3px 10px;
+    color: white;
+    width: fit-content;
+    border-radius: 5px;
+}
+
+/*Layout*/
+.main-container {
+    background-color: white;
+}
+
+/* Početna stranica */
+.float-div {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0px;
+}
+
+#homepage-welcome {
+    background-image: url("../images/homepage.jpg") !important;
+    background-size: cover;
+    height: 700px;
+}
+
+.welcome-text {
+    font-size: 30px;
+    font-weight: bolder;
+    color: white;
+    width: 100%;
+}
+
+.welcome-header {
+    font-size: 80px;
+    font-weight: bolder;
+    color: white;
+    width: 100%;
+}
+
+.card-img-top {
+    background-color: gainsboro;
+    width: 100%;
+    height: 10vw;
+    object-fit: cover;
+}
+
+.site-header {
+    font-weight: bolder;
+    padding: 0px 7px;
+}
+
+.event-div {
+    height: 500px;
+}
+
+.event-left {
+    width: 40%;
+    background-image: url("../images/homepage.jpg") !important;
+    background-size: cover;
+    border-radius: 10px;
+    height: 460px;
+    object-fit: cover;
+}
+
+.event-right {
+    position: relative;
+    width: 60%;
+    height: 460px;
+}
+
+.view-btn {
+    position: absolute;
+    right:    0;
+    bottom:   0;
+}
+
+.organiser-div {
+    position: absolute;
+    left:    22;
+    bottom:   0;
+}
+
+.event-img {
+    width: 100%;
+    object-fit: cover;
+    height: 460px;
+    border-radius: 10px;
+}
+
+.filepond--root,
+.filepond--root .filepond--drop-label {
+  height: 460px !important;
+}
+
+.filepond--file .filepond--image-preview-wrapper .filepond--panel .filepond--item-panel {
+    max-height: 440px !important;
+  }
+
+  

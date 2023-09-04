@@ -10,7 +10,81 @@ const imageTypes = ['image/jpeg', 'image/png', 'images/gif'];
 
 //Get All Events (Admin)
 router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
-    let query = Event.find();
+    let query = Event.find().populate('location').populate('category').populate('organizer');
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index_admin', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
+//Get All Events (Organiser)
+router.get('/organizer', async (req, res) => {
+    let query = Event.find({ organizer: req.user.id }).populate('location').populate('category').populate('organizer');
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index_organizer', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
+//Get All Events (User)
+router.get('/user', checkAuthenticated, async (req, res) => {
+    const reservations = await Reservation.find({ user: req.user.id }).exec();
+    let result = reservations.map(a => a.event);
+    let query = Event.find({ _id: { $in: result } }).populate('location').populate('category').populate('organizer');
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index_user', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
+//Get All Events
+router.get('/', async (req, res) => {
+    let query = Event.find().populate('location').populate('category').populate('organizer');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -23,81 +97,6 @@ router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const events = await query.exec();
         res.render('events/index', {
-            events: events,
-            searchOptions: req.query
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-        //res.redirect('/')
-    }
-});
-
-
-//Get All Events
-router.get('/', async (req, res) => {
-    let query = Event.find();
-    if (req.query.name != null && req.query.name != '') {
-        query = query.regex('name', new RegExp(req.query.name, 'i'))
-    }
-    if (req.query.dateAfter != null && req.query.dateAfter != '') {
-        query = query.gte('date', req.query.dateAfter);
-    }
-    if (req.query.dateBefore != null && req.query.dateBefore != '') {
-        query = query.lte('date', req.query.dateBefore);
-    }
-    try {
-        const events = await query.exec();
-        res.render('events/events', {
-            events: events,
-            searchOptions: req.query
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-        //res.redirect('/')
-    }
-});
-
-//Get All User Events
-router.get('/user', checkAuthenticated, async (req, res) => {
-    const reservations = await Reservation.find({ user: req.user.id }).exec();
-    let result = reservations.map(a => a.event);
-    let query = Event.find({ _id: { $in: result } });
-    if (req.query.name != null && req.query.name != '') {
-        query = query.regex('name', new RegExp(req.query.name, 'i'))
-    }
-    if (req.query.dateAfter != null && req.query.dateAfter != '') {
-        query = query.gte('date', req.query.dateAfter);
-    }
-    if (req.query.dateBefore != null && req.query.dateBefore != '') {
-        query = query.lte('date', req.query.dateBefore);
-    }
-    try {
-        const events = await query.exec();
-        res.render('events/index2', {
-            events: events,
-            searchOptions: req.query
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-        //res.redirect('/')
-    }
-});
-
-//Get All Organiser Events
-router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
-    let query = Event.find({ organizer: req.user.id });
-    if (req.query.name != null && req.query.name != '') {
-        query = query.regex('name', new RegExp(req.query.name, 'i'))
-    }
-    if (req.query.dateAfter != null && req.query.dateAfter != '') {
-        query = query.gte('date', req.query.dateAfter);
-    }
-    if (req.query.dateBefore != null && req.query.dateBefore != '') {
-        query = query.lte('date', req.query.dateBefore);
-    }
-    try {
-        const events = await query.exec();
-        res.render('events/index2', {
             events: events,
             searchOptions: req.query
         });
@@ -157,10 +156,10 @@ router.post('/', async (req, res) => {
     try {
         const newEvent = await event.save();
         //res.redirect(`events/${newEvent.id}`);
-        res.redirect('events');
+        res.redirect('events/admin');
     } catch (err) {
-        //res.status(500).json({ message: err.message });
-        renderNewPage(res, event, false, true);
+        res.status(500).json({ message: err.message });
+        //renderNewPage(res, event, false, true);
     }
 });
 
@@ -212,6 +211,32 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+//Update Event (Organizer)
+router.put('/organizer/:id', async (req, res) => {
+    let event;
+    try {
+        event = await Event.findById(req.params.id);
+        event.name = req.body.name;
+        event.date = req.body.date;
+        event.organizer = req.body.organizer;
+        event.category = req.body.category;
+        event.location = req.body.location;
+        event.description = req.body.description;
+        if (req.body.poster != null && req.body.poster !== '') {
+            savePoster(event, req.body.poster)
+        }
+        await event.save();
+        //res.status(201).json(event);
+        res.redirect('/events/organizer');
+    } catch {
+        if (event == null) {
+            res.redirect('/');
+        } else {
+            renderNewPageOrganizer(res, event, true, true);
+        }
+    }
+});
+
 //Delete Event
 router.delete('/:id', async (req, res) => {
     let event;
@@ -228,6 +253,8 @@ router.delete('/:id', async (req, res) => {
         }
     }
 });
+
+
 
 //Reserve Event
 router.post('/reserve/:id', checkAuthenticated, async (req, res) => {
@@ -272,7 +299,7 @@ router.get('/:id/chat', async (req, res) => {
 
 async function renderNewPage(res, event, edit = false, hasError = false) {
     try {
-        const organizers = await User.find({});
+        const organizers = await User.find({ role: "Organiser" }).exec();
         const categories = await Category.find({});
         const locations = await Location.find({});
         const params = {
@@ -303,7 +330,7 @@ async function renderNewPage(res, event, edit = false, hasError = false) {
 
 async function renderNewPageOrganizer(res, event, edit = false, hasError = false) {
     try {
-        const organizers = await User.find({});
+        const organizers = await User.find({ role: "Organiser" }).exec();
         const categories = await Category.find({});
         const locations = await Location.find({});
         const params = {

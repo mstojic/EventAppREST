@@ -39,15 +39,15 @@ router.use(function(req,res,next){
     next();
 })*/
 
-router.get('/', checkAuthenticated /*, authenticateToken*/, async (req, res) => {
+router.get('/' /*, authenticateToken*/, async (req, res) => {
     let events;
     try {
-        events = await Event.find().sort({ date: 'desc' }).limit(10).exec();
+        events = await Event.find().sort({ date: 'desc' }).populate('location').limit(3).exec();
 
     } catch {
         events = [];
     }
-    res.render('index', { events: events, username: req.user.username });
+    res.render('index', { events: events });
 
     //res.status(500).json(req.user);
 });

@@ -1,5 +1,9 @@
-<h2>New Location</h2>
-<form action="/locations" method="POST">
-    <%- include('_form_fields') %>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="float-div">
+    <h3 class="site-header">NOVA LOKACIJA</h3>
+    <form action="/locations" method="POST" class="p-2">
+        <%- include('_form_fields') %>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Pohrana</button>
+        </div>
+    </form>
+</div>

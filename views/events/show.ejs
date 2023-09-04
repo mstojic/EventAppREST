@@ -3,17 +3,30 @@
     <img height="100" width="100" src="<%= event.posterImagePath %>">
 </div>
 <%= event.organizer.username %>
-<a href="/events/<%= event.id %>/edit">Edit</a>
-<%- include('../partials/deleteForm', {
-    url: `/events/${event.id}`
-}) %>
-<a href="/users/<%= event.organizer.id %>">View organizer</a> 
-<% if(reserved == false) { %>
-<form action="/events/reserve/<%= event.id %>" method="POST">
-    <button type="submit" class="btn btn-primary">Reserve</button>
-</form>
-<% } else {%>
-<form method="POST" action="/events/unreserve/<%= event.id %>?_method=DELETE">
-    <button type="submit">Unreserve</button>
-</form>
+
+<% if(user) { %>
+    <% if(user.role == 'Organiser' && user.id == event.organizer.id) { %>
+        <a href="/events/<%= event.id %>/edit">Edit</a>
+        <%- include('../partials/deleteForm', {
+            url: `/events/${event.id}`
+        }) %>
+    <% } %>
+<% } %>
+<% if(user) { %>
+    <% if(user.role == 'User') { %>
+            <% if(reserved == false) { %>
+                <form action="/events/reserve/<%= event.id %>" method="POST">
+                    <button type="submit" class="btn btn-primary">Reserve</button>
+                </form>
+            <% } else {%>
+                <form method="POST" action="/events/unreserve/<%= event.id %>?_method=DELETE">
+                    <button type="submit">Unreserve</button>
+                </form>
+            <% } %>
+            <form action="/chats" method="POST">
+                <input type="hidden" id="event" name="event" value="<%= event.id %>">
+                <button type="submit" class="btn btn-primary">Imate pitanja?</button>
+                <a href="/chats/<%= event.id %>/new">Imate pitanja?</a>
+            </form>
+        <% } %>
 <% } %>

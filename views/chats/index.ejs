@@ -1,0 +1,24 @@
+<h2>Chats</h2>
+<form action="/chats" method="GET">
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th>Event name</th>
+            <th>Organizator</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% chats.forEach(chat=> { %>
+        <tr>
+            <td><%= chat.id %></td>
+            <td><%= chat.event.name %></td>
+            <td><%= chat.organizer.username %></td>
+            <td><a href="/chats/<%= chat.id %>">View</a></td>
+        </tr>
+        <% }); %>
+
+    </tbody>
+</table>

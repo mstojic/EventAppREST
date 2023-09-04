@@ -21,7 +21,13 @@
             <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Date</th>
-            <th><a href="/events/new">Add Event</a></th>
+            <th>
+                <% if(user) { %>
+                    <% if(user.role == 'Organiser') { %>
+                        <a href="/events/new_organizer">Add Event</a>
+                    <% } %>
+                <% } %>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -37,10 +43,15 @@
                 <td>
                     <div>
                         <a href="/events/<%= event.id %>">View</a>
-                        <a href="/events/<%= event.id %>/edit">Edit</a>
-                        <%- include('../partials/deleteForm', {
-                            url: `/events/${event.id}`
-                        }) %>
+                        <% if(user) { %>
+                            <% if(user.role == 'Organiser') { %>
+                                <a href="/events/<%= event.id %>/edit_organizer">Edit</a>
+
+                                <%- include('../partials/deleteForm', {
+                                    url: `/events/${event.id}`
+                                }) %>
+                            <% } %>
+                        <% } %>
                     </div>
                 </td>
             </tr>

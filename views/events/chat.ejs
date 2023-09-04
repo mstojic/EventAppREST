@@ -1,0 +1,21 @@
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class="text-center"> 
+                    MongoChat
+                    <button id="clear" class="btn btn-danger">Clear</button>
+                </h1>
+                <div id="status"></div>
+            </div>
+            <div id="chat">
+                <input type="hidden" id="username" name="user" value="<%= user.id %>">
+                <br>
+                <div class="card">
+                    <div class="card-block" id="messages" style="height: 300px;"></div>
+                </div>
+                <br>
+                <textarea id="textarea" class="form-control" placeholder="Enter message..." ></textarea>
+            </div>
+        </div>
+    </div>

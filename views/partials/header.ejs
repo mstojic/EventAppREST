@@ -13,64 +13,76 @@
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/users">Users</a>
+                        <a class="nav-link" href="/">Naslovna stranica</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/new">Add User</a>
+                        <a class="nav-link" href="/events">Događaji</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/events">Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/events/new">Add Event</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/locations">Locations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/locations/new">Add Location</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/categories">Categories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/categories/new">Add Category</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/roles">Roles</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/roles/new">Add Role</a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="POST" action="/logout?_method=DELETE">
-                            <button type="submit">Logout</button>
-                        </form>
-                    </li>
-                    
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
+                    <% if(user) { %>
+                        
+                        <% if(user.role === 'User') { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/events/user">Rezervirani događaji</a>
                             </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li> -->
+                        <% } %>
+                        <% if(user.role === 'Organiser') { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/events/organizer">Organizirani događaji</a>
+                            </li>
+                        <% } %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chats">Poruke</a>
+                        </li>
+                    
+                    
+                        <% if(user.role == "Admin") { %>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Administracija
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="/users">Korisnici</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/events/admin">Događaji</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/locations">Lokacije</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/categories">Kategorije</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/roles">Uloge</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </li>
+                        <% } %>
+                    <% } %>
                     <!-- <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                     </li> -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/register">Register</a>
-                    </li>
+
+                    <% if(user) { %>
+                        <li class="nav-item">
+                            <form method="POST" action="/logout?_method=DELETE">
+                                <button type="submit">Logout</button>
+                            </form>
+                        </li>
+                    <% } %>
+
+                    <% if(!user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                    <% } %>
+                    
                 </ul>
                 <!-- <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

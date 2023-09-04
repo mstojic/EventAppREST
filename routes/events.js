@@ -8,8 +8,8 @@ const Reservation = require('../models/Reservation');
 
 const imageTypes = ['image/jpeg', 'image/png', 'images/gif'];
 
-//Get All Events
-router.get('/', async (req, res) => {
+//Get All Events (Admin)
+router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
     let query = Event.find();
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
@@ -32,9 +32,89 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+//Get All Events
+router.get('/', async (req, res) => {
+    let query = Event.find();
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/events', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
+//Get All User Events
+router.get('/user', checkAuthenticated, async (req, res) => {
+    const reservations = await Reservation.find({ user: req.user.id }).exec();
+    let result = reservations.map(a => a.event);
+    let query = Event.find({ _id: { $in: result } });
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index2', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
+//Get All Organiser Events
+router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
+    let query = Event.find({ organizer: req.user.id });
+    if (req.query.name != null && req.query.name != '') {
+        query = query.regex('name', new RegExp(req.query.name, 'i'))
+    }
+    if (req.query.dateAfter != null && req.query.dateAfter != '') {
+        query = query.gte('date', req.query.dateAfter);
+    }
+    if (req.query.dateBefore != null && req.query.dateBefore != '') {
+        query = query.lte('date', req.query.dateBefore);
+    }
+    try {
+        const events = await query.exec();
+        res.render('events/index2', {
+            events: events,
+            searchOptions: req.query
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        //res.redirect('/')
+    }
+});
+
 //New Event Route
 router.get('/new', async (req, res) => {
     renderNewPage(res, new Event())
+});
+
+//New Event Route (Organizer)
+router.get('/new_organizer', async (req, res) => {
+    renderNewPageOrganizer(res, new Event())
 });
 
 //Show Event
@@ -47,13 +127,13 @@ router.get('/:id', async (req, res) => {
         }
 
         let reserved = false;
-        if(reservation == null && req.user == true) {
+        if (reservation == null && req.user == true) {
             reserved = false;
         } else if (reservation != null) {
             reserved = true;
         }
-        
-        res.render('events/show', { 
+
+        res.render('events/show', {
             event: event,
             reserved: reserved
         });
@@ -92,7 +172,18 @@ router.get('/:id/edit', async (req, res) => {
     } catch {
         res.render('/events')
     }
-    
+
+});
+
+//Edit Event (Organizer)
+router.get('/:id/edit_organizer', async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id)
+        renderNewPageOrganizer(res, event, true)
+    } catch {
+        res.render('/events')
+    }
+
 });
 
 //Update Event
@@ -106,7 +197,7 @@ router.put('/:id', async (req, res) => {
         event.category = req.body.category;
         event.location = req.body.location;
         event.description = req.body.description;
-        if(req.body.poster != null && req.body.poster !== ''){
+        if (req.body.poster != null && req.body.poster !== '') {
             savePoster(event, req.body.poster)
         }
         await event.save();
@@ -126,7 +217,7 @@ router.delete('/:id', async (req, res) => {
     let event;
     try {
         event = await Event.findById(req.params.id);
-        await event.deleteOne({_id: req.params.id});
+        await event.deleteOne({ _id: req.params.id });
         //res.status(201).json(newUser);
         res.redirect('/events');
     } catch (err) {
@@ -148,8 +239,8 @@ router.post('/reserve/:id', checkAuthenticated, async (req, res) => {
             user: user.id
         });
         const newReservation = await reservation.save();
-        //res.redirect(`events/${newEvent.id}`);
-        res.redirect('/events');
+        res.redirect(`/events/${newReservation.event}`);
+        //res.redirect('/events');
     } catch (err) {
         res.status(500).json({ message: err.message });
         //renderNewPage(res, event, false, true);
@@ -160,10 +251,11 @@ router.post('/reserve/:id', checkAuthenticated, async (req, res) => {
 router.delete('/unreserve/:id', async (req, res) => {
     let reservation;
     try {
-        reservation = await Reservation.findOne({event: req.params.id, user: req.user.id});
-        await reservation.deleteOne({_id: reservation.id });
+        reservation = await Reservation.findOne({ event: req.params.id, user: req.user.id });
+        await reservation.deleteOne({ _id: reservation.id });
         //res.status(201).json(newUser);
-        res.redirect('/events');
+        res.redirect(`/events/${req.params.id}`);
+        //res.redirect('/events');
     } catch (err) {
         if (reservation == null) {
             res.redirect('/');
@@ -171,6 +263,11 @@ router.delete('/unreserve/:id', async (req, res) => {
             return res.status(500).json({ message: err.message });
         }
     }
+});
+
+//Chat
+router.get('/:id/chat', async (req, res) => {
+    res.render('events/chat');
 });
 
 async function renderNewPage(res, event, edit = false, hasError = false) {
@@ -185,22 +282,53 @@ async function renderNewPage(res, event, edit = false, hasError = false) {
             event: event
         };
 
-        if (hasError){
+        if (hasError) {
             if (edit) {
                 params.errorMessage = 'Error Editing Event'
             } else {
                 params.errorMessage = 'Error Creating Event'
             }
-        } ;
+        };
         if (edit == true) {
             res.render('events/edit', params)
         } else {
             res.render('events/new', params);
         }
 
-        res.render('events/new', params);
+        //res.render('events/new', params);
     } catch {
         res.redirect('/events')
+    }
+}
+
+async function renderNewPageOrganizer(res, event, edit = false, hasError = false) {
+    try {
+        const organizers = await User.find({});
+        const categories = await Category.find({});
+        const locations = await Location.find({});
+        const params = {
+            organizers: organizers,
+            categories: categories,
+            locations: locations,
+            event: event
+        };
+
+        if (hasError) {
+            if (edit) {
+                params.errorMessage = 'Error Editing Event'
+            } else {
+                params.errorMessage = 'Error Creating Event'
+            }
+        };
+        if (edit == true) {
+            res.render('events/edit_organizer', params)
+        } else {
+            res.render('events/new_organizer', params);
+        }
+
+        //res.render('events/new', params);
+    } catch {
+        res.redirect('/events/organizer')
     }
 }
 
@@ -214,10 +342,28 @@ function savePoster(event, posterEncoded) {
 }
 
 function checkAuthenticated(req, res, next) {
-    if(req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
         return next();
     }
     res.redirect('/login');
+}
+
+function checkAuthenticatedOrganiser(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Organiser') {
+            return next();
+        }
+    }
+    res.redirect('/');
+}
+
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Admin') {
+            return next();
+        }
+    }
+    res.redirect('/');
 }
 
 module.exports = router;

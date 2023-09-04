@@ -11,7 +11,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 
 
-const initializePassport = require('../passport-config');
+/*const initializePassport = require('../passport-config');
 initializePassport(
     passport, 
     username => {
@@ -22,6 +22,7 @@ initializePassport(
     }
 );
 
+
 router.use(flash());
 router.use(session( {
     secret: process.env.SESSION_SECRET,
@@ -31,6 +32,12 @@ router.use(session( {
 
 router.use(passport.initialize());
 router.use(passport.session());
+
+
+router.use(function(req,res,next){
+    res.locals.user = req.user;
+    next();
+})*/
 
 router.get('/', checkAuthenticated /*, authenticateToken*/, async (req, res) => {
     let events;
@@ -45,7 +52,7 @@ router.get('/', checkAuthenticated /*, authenticateToken*/, async (req, res) => 
     //res.status(500).json(req.user);
 });
 
-router.get('/login', checkNotAuthenticated, async (req, res) => {
+/*router.get('/login', checkNotAuthenticated, async (req, res) => {
     res.render('login');
 });
 
@@ -54,6 +61,11 @@ router.post('/login', checkNotAuthenticated, passport.authenticate('local', {
     failureRedirect: 'login',
     failureFlash: true
 }));
+
+router.use(function(req, res, next) {
+    res.locals.user = req.session.user;
+    next();
+  });
 
 router.get('/register', checkNotAuthenticated, async (req, res) => {
     res.render('register');

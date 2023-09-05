@@ -23,9 +23,7 @@ body{
 }
 
 .login-error {
-    background-color: rgb(255, 69, 69);
-    padding: 3px 10px;
-    color: white;
+    color: rgb(255, 69, 69);
     width: fit-content;
     border-radius: 5px;
 }
@@ -151,4 +149,9 @@ border-radius: 5px;
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+
+ .event-text {
+    font-size: 16px;
+    font-weight: 500;
+ }
   

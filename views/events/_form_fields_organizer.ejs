@@ -2,7 +2,7 @@
 <div class="float-div event-div d-flex">
     <div class="event-left">
         <div class="mb-3" style="height: 360px;">
-            <input type="file" class="filepond" id="poster" name="poster" required>
+            <input type="file" class="filepond" id="poster" name="poster" <% if (!edit) { %> required <% }%>>
         </div>
     </div>
     <div class="event-right ps-5 pe-3 py-2">

@@ -6,14 +6,17 @@ const Message = require('../models/Message')
 
 //Get All Chats
 router.get('/', checkAuthenticated, async (req, res) => {
-    let searchOptions = {};
-    if (req.query.name != null && req.query.name !== '') {
-        searchOptions.name = new RegExp(req.query.name, 'i');
-    }
+    let query = Chat.find({ $or: [{ 'user': req.user.id }, { 'organizer': req.user.id }] }).populate('event').populate('organizer').populate('user');
+    
+    /*if (req.query.name != null && req.query.name != '') {
+        query = query.regex('event.name', new RegExp(req.query.name, 'i'))
+    }*/
+    
     try {
-        const chats = await Chat.find({ $or: [{ 'user': req.user.id }, { 'organizer': req.user.id }] }).populate('event').populate('organizer').populate('user').exec();
+        const chats = await query.exec();
         res.render('chats/index', {
-            chats: chats
+            chats: chats,
+            searchOptions: req.query
         });
     } catch (err) {
         res.status(500).json({ message: err.message });

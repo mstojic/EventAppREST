@@ -11,7 +11,7 @@ const imageTypes = ['image/jpeg', 'image/png', 'images/gif'];
 
 //Get All Events (Admin)
 router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
-    let query = Event.find().populate('location').populate('category').populate('organizer');
+    let query = Event.find().populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -35,7 +35,7 @@ router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
 
 //Get All Events (Organiser)
 router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
-    let query = Event.find({ organizer: req.user.id }).populate('location').populate('category').populate('organizer');
+    let query = Event.find({ organizer: req.user.id }).populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -61,7 +61,7 @@ router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
 router.get('/user', checkAuthenticatedUser, async (req, res) => {
     const reservations = await Reservation.find({ user: req.user.id }).exec();
     let result = reservations.map(a => a.event);
-    let query = Event.find({ _id: { $in: result } }).populate('location').populate('category').populate('organizer');
+    let query = Event.find({ _id: { $in: result } }).populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -85,7 +85,7 @@ router.get('/user', checkAuthenticatedUser, async (req, res) => {
 
 //Get All Events
 router.get('/', async (req, res) => {
-    let query = Event.find().populate('location').populate('category').populate('organizer');
+    let query = Event.find().populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -120,7 +120,7 @@ router.get('/new_organizer', checkAuthenticatedOrganiser, async (req, res) => {
 //Show Event
 router.get('/:id', async (req, res) => {
     try {
-        const event = await Event.findById(req.params.id).populate('location').populate('category').populate('organizer').exec();
+        const event = await Event.findById(req.params.id).populate('location').populate('category').populate('organizer').populate('reservations').exec();
         let reservation;
         if (req.user != null) {
             reservation = await Reservation.findOne({ event: event.id, user: req.user.id });
@@ -173,28 +173,6 @@ router.post('/', checkAuthenticatedAdminOrOrganiser, async (req, res) => {
         //renderNewPage(res, event, false, true);
     }
 });
-
-//Create Event (Organiser)
-/*router.post('/organizer', async (req, res) => {
-    const event = new Event({
-        name: req.body.name,
-        date: req.body.date,
-        organizer: req.body.organizer,
-        category: req.body.category,
-        location: req.body.location,
-        description: req.body.description,
-    });
-    savePoster(event, req.body.poster)
-
-    try {
-        const newEvent = await event.save();
-        res.redirect(`/events/${newEvent.id}`);
-        //res.redirect('events/organizer');
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-        //renderNewPage(res, event, false, true);
-    }
-});*/
 
 //Edit Event
 router.get('/:id/edit', checkAuthenticatedAdmin, async (req, res) => {

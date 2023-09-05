@@ -43,7 +43,7 @@
         <tbody>
             <% events.forEach(event=> { %>
             <tr>
-                <td style="width: 120px"><img height="100" width="100" src="<%= event.posterImagePath %>"></td>
+                <td style="width: 120px;"><img height="100" width="100" style="border-radius: 5px;" src="<%= event.posterImagePath %>"></td>
                 <td><%= event.name %></td>
                 <td><%= event.date.toDateString("ddMMyyyy") %></td>
                 <td><%= event.location.name %></td>

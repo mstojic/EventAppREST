@@ -44,17 +44,20 @@ const eventSchema = new mongoose.Schema({
     }
 });
 
+eventSchema.virtual('reservations', {
+    ref: 'Reservation',
+    localField: '_id',
+    foreignField: 'event',
+    count: true
+  });
+
+  
+
 eventSchema.virtual('posterImagePath').get(function() {
     if (this.eventPoster != null && this.eventPosterType != null) {
         return `data:${this.eventPosterType};charset=utf-8;base64,${this.eventPoster.toString('base64')}`;
     }
 });
-
-/*eventSchema.virtual('reservations').get(function() {
-    const count = Reservation.find({ event: this._id })
-    console.log(count)
-    return count;
-});*/
 
 
 module.exports = mongoose.model('Event', eventSchema);

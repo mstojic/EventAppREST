@@ -77,11 +77,10 @@ router.put('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let user;
     try {
         user = await User.findById(req.params.id);
-        if(req.body.password != null) {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            user.password = hashedPassword;
-        }
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        
         user.username = req.body.username;
+        user.password =  hashedPassword;
         user.name = req.body.name,
         user.role = req.body.role;
         await user.save();

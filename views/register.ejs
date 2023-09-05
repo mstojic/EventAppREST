@@ -1,4 +1,4 @@
-<form class="register-form" action="/register" method="POST">
+<form class="register-form" action="/register" onSubmit="return checkPassword(this)" method="POST">
   <h2>Registracija</h2>
   <br>
   <div class="mb-3">
@@ -15,12 +15,31 @@
   </div>
   <div class="mb-3">
     <label for="confirmPassword" class="form-label">Potvrdite lozinku</label>
-    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
   </div>
   <div class="form-check">
     <input type="checkbox" class="form-check-input" id="organiser" name="organiser">
     <label class="form-check-label" for="organiser">Organizator</label>
   </div>
+  <div class="login-error fw-bold mt-2" id="loginError" name="loginError">
+    <%= messages.error %>
+  </div>
   <br>
   <button type="submit" class="btn btn-success">Registracija</button>
 </form>
+
+<script>
+  function checkPassword(form) {
+    password = form.password.value;
+    confirmPassword = form.confirmPassword.value;
+    loginError = document.getElementById('loginError');
+   
+    if (password != confirmPassword) {
+        loginError.innerHTML = "Lozinke se ne poklapaju!";
+        return false;
+    } else {
+      loginError.innerHTML = "";
+        return true;
+    }
+}
+</script>

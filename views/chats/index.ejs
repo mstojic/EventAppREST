@@ -1,18 +1,6 @@
 <div class="float-div">
     <h3 class="site-header">PORUKE</h3>
-    <br>
-    <form class="d-flex" action="/chats" method="GET">
-        <div class="mb-3 mx-2 flex-fill">
-            <label for="name" class="form-label">Naziv događaja</label>
-            <input class="form-control" id="name" name="name" value="">
-        </div>
-        <div class="mb-3 mx-2">
-            <label class="form-label">&nbsp;</label>
-            <button type="submit" class="form-control btn btn-primary">Pretraga</button>
-        </div>
-    </form>
-</div>
-<div class="float-div">
+    <hr class="mb-1">
     <table class="table">
         <thead>
             <tr>
@@ -26,7 +14,7 @@
         <tbody>
             <% chats.forEach(chat=> { %>
                 <tr>
-                    <td style="width: 120px"><img height="100" width="100" src="<%= chat.event.posterImagePath %>"></td>
+                    <td style="width: 120px"><img height="100" width="100" style="border-radius: 5px;"  src="<%= chat.event.posterImagePath %>"></td>
                     <td><%= chat.event.name %></td>
                     <% if (user.role == 'User') { %><td><%= chat.organizer.name %></td><% } %>
                     <% if (user.role == 'Organiser') { %><td><%= chat.user.name %></td><% } %>

@@ -30,25 +30,25 @@
         <div class="event-right ps-5 pe-3 py-2">
             <h3 class="fw-bold"><%= event.name %></h3>
             <hr/>
-            <div class="d-flex">
+            <div class="d-flex event-text">
                 <label>Datum:&nbsp; </label>
-                <p><%= event.date.toDateString("ddMMyyyy") %></p>
+                <p class="fw-bold"><%= event.date.toDateString("ddMMyyyy") %></p>
             </div>
-            <div class="d-flex">
+            <div class="d-flex event-text">
                 <label>Lokacija:&nbsp; </label>
-                <p><%= event.location.name %></p>
+                <p class="fw-bold"><%= event.location.name %></p>
             </div>
-            <div class="d-flex">
+            <div class="d-flex event-text">
                 <label>Kategorija:&nbsp; </label>
-                <p><%= event.category.name %></p>
+                <p class="fw-bold"><%= event.category.name %></p>
             </div>
-            <div class="d-flex">
+            <div class="d-flex event-text">
                 <label>Broj rezervacija:&nbsp; </label>
-                <p></p>
+                <p class="fw-bold"><%= event.reservations %></p>
             </div>
-            <div class="d-flex organiser-div">
+            <div class="d-flex organiser-div event-text">
                 <label>Organizator:&nbsp; </label>
-                <p><%= event.organizer.name %></p>
+                <p class="fw-bold"><%= event.organizer.name %></p>
             </div>
             <div class="view-btn mb-2 me-2">
                 <a href="/events/<%= event.id %>" class="btn btn-primary">Pogledajte događaj</a>

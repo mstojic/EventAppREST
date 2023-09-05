@@ -5,7 +5,7 @@ const Event = require('../models/Event')
 const bcrypt = require('bcrypt');
 
 //Get All Users
-router.get('/', async (req, res) => {
+router.get('/', checkAuthenticatedAdmin, async (req, res) => {
     let searchOptions = {};
     if (req.query.username != null && req.query.username !== '') {
         searchOptions.username = new RegExp(req.query.username, 'i');
@@ -22,12 +22,12 @@ router.get('/', async (req, res) => {
 });
 
 //New User Route
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticatedAdmin, (req, res) => {
     res.render('users/new', { user: new User() });
 });
 
 //Show User
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const events = await Event.find({ organizer: user.id }).exec();
@@ -41,15 +41,15 @@ router.get('/:id', async (req, res) => {
 });
 
 //Create User
-router.post('/', async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+router.post('/', checkAuthenticatedAdmin, async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             username: req.body.username,
+            name: req.body.name,
             password: hashedPassword,
             role: req.body.role
         });
-
-    try {
         const newUser = await user.save();
         //res.status(201).json(newUser);
         res.redirect('users');
@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
 });
 
 //Edit User
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
         res.render('users/edit', { user: user });
@@ -73,12 +73,17 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 //Update User
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let user;
     try {
         user = await User.findById(req.params.id);
+        if(req.body.password != null) {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            user.password = hashedPassword;
+        }
         user.username = req.body.username;
-        user.password = req.body.password;
+        user.name = req.body.name,
+        user.role = req.body.role;
         await user.save();
         //res.status(201).json(newUser);
         res.redirect('/users');
@@ -95,7 +100,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //Delete User
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let user;
     try {
         user = await User.findById(req.params.id);
@@ -111,22 +116,14 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-/*async function getUser(req, res, next) {
-    let user;
-    try {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            user = await User.findById(req.params.id)
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Admin') {
+            return next();
         }
-
-        if (user == null) {
-            return res.status(404).json('Cannot find user');
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
     }
+    res.redirect('/');
+}
 
-    res.user = user;
-    next();
-}*/
 
 module.exports = router;

@@ -39,7 +39,7 @@ router.use(function(req,res,next){
     next();
 })*/
 
-router.get('/' /*, authenticateToken*/, async (req, res) => {
+router.get('/', async (req, res) => {
     let events;
     try {
         events = await Event.find().sort({ date: 'desc' }).populate('location').limit(3).exec();

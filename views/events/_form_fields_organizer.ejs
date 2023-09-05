@@ -6,7 +6,13 @@
         </div>
     </div>
     <div class="event-right ps-5 pe-3 py-2">
-        <h3 class="fw-bold">Novi događaj</h3>
+        <h3 class="fw-bold">
+            <% if (edit) { %>
+                Uređivanje događaja
+            <% } else {%>
+                Novi događaj
+            <% } %>
+        </h3>
         <hr/>
         <div class="d-flex">
             <div class="mb-3 pe-2 flex-fill">
@@ -47,7 +53,7 @@
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Opis</label>
-            <textarea class="form-control" id="description" name="description"><%= event.description %></textarea>
+            <textarea class="form-control" id="description" name="description" style="height: 100px;"><%= event.description %></textarea>
         </div>
         <div class="view-btn mb-2 me-2">
             <button type="submit" class="btn btn-primary">Pohrana</button>

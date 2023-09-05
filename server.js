@@ -60,6 +60,7 @@ client.on('connection', async function(socket) {
     socket.on('input', function(data){
         let messageText = data.message;
         let user = data.user;
+        let name = data.name;
         let chat = data.chat;
 
         //Check for name ann message
@@ -68,7 +69,7 @@ client.on('connection', async function(socket) {
             sendStatus('Please enter a message');
         } else {
             //insert message
-            message.insertOne({message: messageText, user: user, chat: chat });
+            message.insertOne({message: messageText, user: user, name: name, chat: chat });
             
             client.emit('output', [data]);
 
@@ -117,8 +118,6 @@ app.use(function(req,res,next){
     next();
 })
 
-
-
 app.get('/login', checkNotAuthenticated, async (req, res) => {
     res.render('login');
 });
@@ -129,8 +128,6 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
     failureFlash: true
 }));
 
-
-
 app.get('/register', checkNotAuthenticated, async (req, res) => {
     res.render('register');
 });
@@ -140,6 +137,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             username: req.body.username,
+            name: req.body.name,
             password: hashedPassword,
             role: req.body.organiser != null ? 'Organiser' : 'User'
         });

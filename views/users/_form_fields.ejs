@@ -1,16 +1,20 @@
 <div class="mb-3">
     <label for="username" class="form-label">Korisničko ime</label>
-    <input type="email" class="form-control" id="username" name="username" value="<%= user.username %>">
+    <input type="email" class="form-control" id="username" name="username" value="<%= user.username %>" required>
+</div>
+<div class="mb-3">
+    <label for="name" class="form-label">Ime</label>
+    <input class="form-control" id="name" name="name" value="<%= user.name %>" required>
 </div>
 <div class="mb-3">
     <label for="password" class="form-label">Lozinka</label>
-    <input type="password" class="form-control" id="password" name="password" value="<%= user.password %>">
+    <input type="password" class="form-control" id="password" name="password">
 </div>
 <div class="mb-3">
     <label for="role" class="form-label">Uloga</label>
     <select id="role" name="role" class="form-select" required>
-        <option label="Korisnik" value="User" selected></option>
-        <option label="Organizator" value="Organiser"></option>
-        <option label="Administrator" value="Admin"></option>
+        <option label="Korisnik" value="User" <% if(user.role == 'User') { %> selected <% } %>></option>
+        <option label="Organizator" value="Organiser" <% if(user.role == 'Organiser') { %> selected <% } %>></option>
+        <option label="Administrator" value="Admin" <% if(user.role == 'Admin') { %> selected <% } %>></option>
     </select>
 </div>

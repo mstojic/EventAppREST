@@ -1,26 +1,30 @@
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h1 class="text-center"> 
-                MongoChat
-                <button id="clear" class="btn btn-danger">Clear</button>
-            </h1>
-            <div id="status"></div>
-        </div>
+    <div>
         <div id="chat">
             <br>
             <input type="hidden" id="user" name="user" value="<%= user.id %>">
-            <input type="hidden" id="chat" name="chat" value="<%= chat.id %>">
-            <div class="card">
-                <div class="card-block" id="messages" style="height: 300px;"></div>
+            <input type="hidden" id="chatid" name="chatid" value="<%= chat.id %>">
+            <input type="hidden" id="name" name="name" value="<%= user.name %>">
+            <div class="float-div" style="padding: 10px;">
+                <div class="card-block overflow-auto" id="messages" style="height: 400px; border-radius: 10px; margin: 10px 0; padding: 0 10px;"></div>
             </div>
             <br>
-            <textarea id="textarea" class="form-control" placeholder="Enter message..." ></textarea>
-
+            <div class="d-flex">
+                <div class="flex-fill me-2">
+                    <textarea id="textarea" class="form-control" placeholder="Unesite poruku..." ></textarea>
+                </div>
+                <div>
+                    <button id="send" name="send" class="btn btn-success"><i class="bi bi-send" style="font-size: 32px;"></i></button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <div>
+        <h1 class="text-center d-none"> 
+            <button id="clear" class="btn btn-danger">Clear</button>
+        </h1>
+        <div id="status" class="d-none"></div>
+    </div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
 
@@ -35,8 +39,11 @@
         var messages = element('messages');
         var textarea = element('textarea');
         var user = element('user');
+        var name = element('name');
         var chat = element('chat');
+        var chatid = element('chatid');
         var clearBtn = element('clear');
+        var sendBtn = element('send');
 
 
         //Set default status 
@@ -65,12 +72,33 @@
                 if(data.length) {
                     for(var x = 0; x < data.length; x++) {
                         //Build out message div
-                        if(data[x].chat == chat.value){
+                        if(data[x].chat == chatid.value){
                             var message = document.createElement('div');
+                            var messageContent = document.createElement('div');
+                            var spacer = document.createElement('div');
+
                             message.setAttribute('class', 'chat-message');
-                            message.textContent = data[x].user + ": " + data[x].message;
+                            messageContent.setAttribute('class', 'chat-message-contnent');
+                            spacer.setAttribute('style', 'height: 10px');
+
+                            message.classList.add('d-flex', 'mb-2');
+
+                            if(data[x].user == user.value) {
+                                message.classList.add('justify-content-end');
+                                messageContent.setAttribute('style', 'background-color: #0d6efd;');
+                                messageContent.textContent = data[x].message;
+                            }
+
+                            if(data[x].user != user.value) {
+                                message.classList.add('justify-content-start');
+                                messageContent.setAttribute('style', 'background-color: gray;');
+                                messageContent.textContent = data[x].name + ": " + data[x].message;
+                            }
+                            
+                            //messageContent.textContent = data[x].name + ": " + data[x].message;
+                            message.appendChild(messageContent);
                             messages.appendChild(message);
-                            messages.insertBefore(message, messages.firstChild);
+                            //messages.insertAfter(message, messages.firstChild);
                         }
                     }
                 }
@@ -88,19 +116,48 @@
             });
 
             //Handle Input
-            console.log(chat.value)
             textarea.addEventListener('keydown', function(event){
                 if(event.which === 13 && event.shiftKey == false) {
                     //Emit to server input
+                    console.log(chatid.value);
                     socket.emit('input', {
                         message: textarea.value,
                         user: user.value,
-                        chat: chat.value
+                        name: name.value,
+                        chat: chatid.value
                     });
 
                     event.preventDefault();
                 }
             })
+
+            sendBtn.addEventListener("click", function(event){
+                
+                    //Emit to server input
+                    console.log(chatid.value);
+                    socket.emit('input', {
+                        message: textarea.value,
+                        user: user.value,
+                        name: name.value,
+                        chat: chatid.value
+                    });
+
+                    event.preventDefault();
+                
+            })
+
+            function inputEmit() {
+                //Emit to server input
+                console.log(chatid.value);
+                socket.emit('input', {
+                    message: textarea.value,
+                    user: user.value,
+                    name: name.value,
+                    chat: chatid.value
+                });
+
+                event.preventDefault();
+            }
 
             //Handle Chat Clear
             clearBtn.addEventListener('click', function() {

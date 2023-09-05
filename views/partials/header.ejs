@@ -30,9 +30,11 @@
                                 <a class="nav-link" href="/events/organizer">Organizirani događaji</a>
                             </li>
                         <% } %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/chats">Poruke</a>
-                        </li>
+                        <% if(user.role !== 'Admin') { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chats">Poruke</a>
+                            </li>
+                        <% } %>
                     
                     
                         <% if(user.role == "Admin") { %>

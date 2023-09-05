@@ -5,7 +5,7 @@
     </div>
 </div>
 <div class="container float-div text-center">
-    <h2>Najnoviji događaji</h2>
+    <h2 class="fw-bold">NAJNOVIJI DOGAĐAJI</h2>
     <hr/>
     <br>
 
@@ -18,7 +18,8 @@
                 <div class="card-body">
                     <h5 class="card-title"><%= event.name %></h5>
                     <p class="card-text"><%= event.location.name %></p>
-                    <a href="/events/<%= event.id %>" class="btn btn-primary">Go somewhere</a>
+                    <!-- <p class="card-text">Rezervirani događaji: <%= event.reservations %></p> -->
+                    <a href="/events/<%= event.id %>" class="btn btn-primary">Pogledajte događaj</a>
                 </div>
             </div>
         </div>

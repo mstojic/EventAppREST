@@ -81,7 +81,6 @@ body{
 
 .event-left {
     width: 40%;
-    background-image: url("../images/homepage.jpg") !important;
     background-size: cover;
     border-radius: 10px;
     height: 460px;
@@ -122,4 +121,34 @@ body{
     max-height: 440px !important;
   }
 
+
+.chat-message-contnent {
+background-color: gray;
+color: white;
+padding: 10px;
+border-radius: 5px;
+}
+
+
+  /* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
   

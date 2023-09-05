@@ -26,6 +26,7 @@
         <thead>
             <tr>
                 <th scope="col">Korisničko ime</th>
+                <th scope="col">Ime</th>
                 <th scope="col">Uloga</th>
                 <th style="width: 100px;">
                     <div class="d-flex justify-content-end">
@@ -38,6 +39,7 @@
             <% users.forEach(user=> { %>
             <tr>
                 <td><%= user.username %></td>
+                <td><%= user.name %></td>
                 <td><%= user.role %></td>
                 <td>
                     <div class="d-flex justify-content-end">

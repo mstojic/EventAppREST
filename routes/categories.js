@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category')
 
-//Get All Locations
-router.get('/', async (req, res) => {
+//Get All Categories
+router.get('/', checkAuthenticatedAdmin, async (req, res) => {
     let searchOptions = {};
     if (req.query.name != null && req.query.name !== '') {
         searchOptions.name = new RegExp(req.query.name, 'i');
@@ -20,12 +20,12 @@ router.get('/', async (req, res) => {
 });
 
 //New Category Route
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticatedAdmin, (req, res) => {
     res.render('categories/new', { category: new Category() });
 });
 
 //Create Category
-router.post('/', async (req, res) => {
+router.post('/', checkAuthenticatedAdmin, async (req, res) => {
     const category = new Category({
         name: req.body.name
     });
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 });
 
 //Edit Category
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const category = await Category.findById(req.params.id)
         res.render('categories/edit', { category: category });
@@ -54,7 +54,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 //Update Category
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let category;
     try {
         category = await Category.findById(req.params.id);
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //Delete Category
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let category;
     try {
         category = await Category.findById(req.params.id);
@@ -91,22 +91,13 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-async function getCategory(req, res, next) {
-    let category;
-    try {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            category = await Category.findById(req.params.id)
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Admin') {
+            return next();
         }
-
-        if (category == null) {
-            return res.status(404).json('Cannot find category');
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
     }
-
-    res.category = category;
-    next();
+    res.redirect('/');
 }
 
 module.exports = router;

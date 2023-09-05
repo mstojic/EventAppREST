@@ -1,5 +1,5 @@
 <div class="float-div">
-    <h3 class="site-header">DOGAĐAJI</h3>
+    <h3 class="site-header">ORGANIZIRANI DOGAĐAJI</h3>
     <br>
 
     <form class="d-flex" action="/events" method="GET">
@@ -48,16 +48,12 @@
                 <p><%= event.category.name %></p>
             </div>
             <div class="d-flex">
-                <label>Opis:&nbsp; </label>
-                <p><%= event.description %></p>
-            </div>
-            <div class="d-flex">
                 <label>Broj rezervacija:&nbsp; </label>
                 <p></p>
             </div>
             <div class="d-flex organiser-div">
                 <label>Organizator:&nbsp; </label>
-                <p><%= event.organizer.username %></p>
+                <p><%= event.organizer.name %></p>
             </div>
             <div class="view-btn mb-2 me-2 d-flex">
                 <div>
@@ -67,13 +63,11 @@
                     <a href="/events/<%= event.id %>/edit_organizer" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
                 </div>
                 <div class="ms-2">
-
                         <%- include('../partials/deleteForm', {
                             url: `/events/${event.id}`
                         }) %>
                 </div>
             </div>
-            
         </div>
     </div>
 <% }); %>

@@ -26,11 +26,13 @@
     <table class="table">
         <thead>
             <tr>
+                <th><i class="bi bi-camera-fill"></i></th>
                 <th scope="col">Naziv</th>
                 <th scope="col">Datum</th>
                 <th scope="col">Lokacija</th>
                 <th scope="col">Kategorija</th>
                 <th scope="col">Kreirano</th>
+                <th scope="col">Organizator</th>
                 <th style="width: 100px;">
                     <div class="d-flex justify-content-end">
                         <a href="/events/new" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>
@@ -41,11 +43,13 @@
         <tbody>
             <% events.forEach(event=> { %>
             <tr>
+                <td style="width: 120px"><img height="100" width="100" src="<%= event.posterImagePath %>"></td>
                 <td><%= event.name %></td>
                 <td><%= event.date.toDateString("ddMMyyyy") %></td>
                 <td><%= event.location.name %></td>
                 <td><%= event.category.name %></td>
                 <td><%= event.createdAt.toDateString("ddMMyyyy")  %></td>
+                <td><%= event.organizer.name %></td>
                 <td>
                     <div class="d-flex justify-content-end">
                         <a href="/events/<%= event.id %>" class="btn btn-primary me-2"><i class="bi bi-eye"></i></a>

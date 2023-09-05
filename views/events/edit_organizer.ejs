@@ -1,5 +1,3 @@
-<h2>Edit Event</h2>
-<form action="/events/organizer/<%= event.id %>?_method=PUT" method="POST">
+<form action="/events/<%= event.id %>?_method=PUT" method="POST">
     <%- include('_form_fields_organizer') %>
-    <button type="submit" class="btn btn-primary">Submit</button>
 </form>

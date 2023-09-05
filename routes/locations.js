@@ -3,7 +3,7 @@ const router = express.Router();
 const Location = require('../models/Location')
 
 //Get All Locations
-router.get('/', async (req, res) => {
+router.get('/', checkAuthenticatedAdmin, async (req, res) => {
     let searchOptions = {};
     if (req.query.name != null && req.query.name !== '') {
         searchOptions.name = new RegExp(req.query.name, 'i');
@@ -20,12 +20,12 @@ router.get('/', async (req, res) => {
 });
 
 //New Location Route
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticatedAdmin, (req, res) => {
     res.render('locations/new', { location: new Location() });
 });
 
 //Create Location
-router.post('/', async (req, res) => {
+router.post('/', checkAuthenticatedAdmin, async (req, res) => {
     const location = new Location({
         name: req.body.name
     });
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 });
 
 //Edit Location
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const location = await Location.findById(req.params.id)
         res.render('locations/edit', { location: location });
@@ -54,7 +54,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 //Update Location
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let location;
     try {
         location = await Location.findById(req.params.id);
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //Delete Location
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let location;
     try {
         location = await Location.findById(req.params.id);
@@ -91,22 +91,13 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-async function getLocation(req, res, next) {
-    let location;
-    try {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            location = await Location.findById(req.params.id)
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Admin') {
+            return next();
         }
-
-        if (location == null) {
-            return res.status(404).json('Cannot find location');
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
     }
-
-    res.location = location;
-    next();
+    res.redirect('/');
 }
 
 module.exports = router;

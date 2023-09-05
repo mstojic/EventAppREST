@@ -5,13 +5,13 @@ const Event = require('../models/Event')
 const Message = require('../models/Message')
 
 //Get All Chats
-router.get('/', async (req, res) => {
-    /* let searchOptions = {};
-     if (req.query.name != null && req.query.name !== '') {
-         searchOptions.name = new RegExp(req.query.name, 'i');
-     }*/
+router.get('/', checkAuthenticated, async (req, res) => {
+    let searchOptions = {};
+    if (req.query.name != null && req.query.name !== '') {
+        searchOptions.name = new RegExp(req.query.name, 'i');
+    }
     try {
-        const chats = await Chat.find({ $or: [{ 'user': req.user.id }, { 'organizer': req.user.id }] }).populate('event').populate('organizer').exec();
+        const chats = await Chat.find({ $or: [{ 'user': req.user.id }, { 'organizer': req.user.id }] }).populate('event').populate('organizer').populate('user').exec();
         res.render('chats/index', {
             chats: chats
         });
@@ -21,9 +21,9 @@ router.get('/', async (req, res) => {
 });
 
 //Show Chat
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuthenticated, async (req, res) => {
     try {
-        const chat = await Chat.findById(req.params.id).populate('organizer').populate('user').exec();
+        const chat = await Chat.findById(req.params.id).populate('organizer').populate('user').populate('event').exec();
         const messages = await Message.find({ chat: chat.id });
         res.render('chats/show', {
             messages: messages,
@@ -35,8 +35,9 @@ router.get('/:id', async (req, res) => {
 });
 
 //Create Chat
-router.post('/', async (req, res) => {
+router.post('/', checkAuthenticated, async (req, res) => {
     const event = await Event.findById(req.body.event);
+    const existingChat = await Chat.findOne( {event: event.id, user: req.user.id} )
     const chat = new Chat({
         event: event.id,
         organizer: event.organizer,
@@ -44,9 +45,16 @@ router.post('/', async (req, res) => {
     });
 
     try {
-        const newLocation = await chat.save();
-        //res.status(201).json(newLocation);
-        res.redirect('/chats');
+        if(!existingChat) {
+            const newChat = await chat.save();
+            res.redirect(`/chats/${newChat.id}`);
+            //res.redirect('/chats');
+        } else {
+            res.redirect(`/chats/${existingChat.id}`);
+        }
+        
+        //res.status(201).json(newChat);
+        
     } catch (err) {
         res.render('chats/new', {
             chat: chat,
@@ -56,7 +64,7 @@ router.post('/', async (req, res) => {
 });
 
 //Edit Chat
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticated, async (req, res) => {
     try {
         const chat = await Chat.findById(req.params.id)
         res.render('chats/edit', { chat: chat });
@@ -67,7 +75,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 //Update Chat
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticated, async (req, res) => {
     let chat;
     try {
         chat = await Chat.findById(req.params.id);
@@ -88,7 +96,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //Delete Chat
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthenticated, async (req, res) => {
     let chat;
     try {
         chat = await Chat.findById(req.params.id);
@@ -104,22 +112,11 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-async function getLocation(req, res, next) {
-    let chat;
-    try {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            chat = await Chat.findById(req.params.id)
-        }
-
-        if (chat == null) {
-            return res.status(404).json('Cannot find chat');
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
     }
-
-    res.chat = chat;
-    next();
+    res.redirect('/');
 }
 
 module.exports = router;

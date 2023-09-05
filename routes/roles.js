@@ -3,7 +3,7 @@ const router = express.Router();
 const Role = require('../models/Role')
 
 //Get All Roles
-router.get('/', async (req, res) => {
+router.get('/', checkAuthenticatedAdmin, async (req, res) => {
     let searchOptions = {};
     if (req.query.name != null && req.query.name !== '') {
         searchOptions.name = new RegExp(req.query.name, 'i');
@@ -25,12 +25,12 @@ router.get('/', async (req, res) => {
 });*/
 
 //New Role Route
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticatedAdmin, (req, res) => {
     res.render('roles/new', { role: new Role() });
 });
 
 //Create Role
-router.post('/', async (req, res) => {
+router.post('/', checkAuthenticatedAdmin, async (req, res) => {
     const role = new Role({
         name: req.body.name
     });
@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
 });
 
 //Edit Role
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticatedAdmin, async (req, res) => {
     try {
         const role = await Role.findById(req.params.id)
         res.render('roles/edit', { role: role });
@@ -59,7 +59,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 //Update Role
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let role;
     try {
         role = await Role.findById(req.params.id);
@@ -80,7 +80,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //Delete Role
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuthenticatedAdmin, async (req, res) => {
     let role;
     try {
         role = await Role.findById(req.params.id);
@@ -96,22 +96,13 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-async function getRole(req, res, next) {
-    let role;
-    try {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            role = await Role.findById(req.params.id)
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if(req.user.role == 'Admin') {
+            return next();
         }
-
-        if (role == null) {
-            return res.status(404).json('Cannot find role');
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
     }
-
-    res.role = role;
-    next();
+    res.redirect('/');
 }
 
 module.exports = router;

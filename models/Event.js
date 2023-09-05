@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Reservation = require('./Reservation');
+const { Int32 } = require('mongodb');
 
 const eventSchema = new mongoose.Schema({
     name: {
@@ -47,5 +49,12 @@ eventSchema.virtual('posterImagePath').get(function() {
         return `data:${this.eventPosterType};charset=utf-8;base64,${this.eventPoster.toString('base64')}`;
     }
 });
+
+/*eventSchema.virtual('reservations').get(function() {
+    const count = Reservation.find({ event: this._id })
+    console.log(count)
+    return count;
+});*/
+
 
 module.exports = mongoose.model('Event', eventSchema);

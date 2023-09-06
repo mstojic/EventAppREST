@@ -133,9 +133,10 @@ app.get('/register', checkNotAuthenticated, async (req, res) => {
 });
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
+    let user;
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user = new User({
+        user = new User({
             username: req.body.username,
             name: req.body.name,
             password: hashedPassword,
@@ -145,9 +146,8 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
         //res.status(201).json(newUser);
         res.redirect('login');
     } catch (err) {
-        res.render('users/new', {
-            user: user,
-            errorMessage: 'Error creating User'
+        res.render('register', {
+            errorMessage: 'Korisničko ime već postoji.'
         })
     }
 });

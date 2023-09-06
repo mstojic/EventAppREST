@@ -43,7 +43,6 @@
                 <td><%= user.role %></td>
                 <td>
                     <div class="d-flex justify-content-end">
-                        <a href="/users/<%= user.id %>" class="btn btn-primary me-2"><i class="bi bi-eye"></i></a>
                         <a href="/users/<%= user.id %>/edit" class="btn btn-primary me-2"><i class="bi bi-pencil"></i></a>
                         <%- include('../partials/deleteForm', {
                             url: `/users/${user.id}`

@@ -1,5 +1,5 @@
-<div class="float-div ">
-    <div class="event-up event-div d-flex">
+<div class="float-div">
+    <div class="event-up d-flex">
         <div class="event-left">
             <img class="event-img" height="100" width="100" src="<%= event.posterImagePath %>">
         </div>
@@ -73,10 +73,13 @@
             </div>
         </div>
     </div>
-    <hr/>
-    <div class="event-down">
-        <h3 class="fw-bold ">Opis događaja:</h3>
-        <p><%= event.description %></p>
-    </div>
+    <% if(event.description != null && event.description != '') { %>    
+        <div style="margin-top: 32px;"></div>
+        <hr/>
+        <div class="event-down">
+            <h3 class="fw-bold ">Opis događaja:</h3>
+            <p><%= event.description %></p>
+        </div>
+    <% } %>
 </div>
 

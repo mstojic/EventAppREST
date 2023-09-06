@@ -91,6 +91,10 @@ body{
     height: 460px;
 }
 
+.event-up {
+    height: 460px;
+}
+
 .view-btn {
     position: absolute;
     right:    0;

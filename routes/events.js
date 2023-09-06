@@ -35,7 +35,7 @@ router.get('/admin', checkAuthenticatedAdmin, async (req, res) => {
 
 //Get All Events (Organiser)
 router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
-    let query = Event.find({ organizer: req.user.id }).populate('location').populate('category').populate('organizer').populate('reservations');
+    let query = Event.find({ organizer: req.user.id }).sort({ date: 'desc' }).populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -61,7 +61,7 @@ router.get('/organizer', checkAuthenticatedOrganiser, async (req, res) => {
 router.get('/user', checkAuthenticatedUser, async (req, res) => {
     const reservations = await Reservation.find({ user: req.user.id }).exec();
     let result = reservations.map(a => a.event);
-    let query = Event.find({ _id: { $in: result } }).populate('location').populate('category').populate('organizer').populate('reservations');
+    let query = Event.find({ _id: { $in: result } }).sort({ date: 'asc' }).populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
@@ -85,7 +85,7 @@ router.get('/user', checkAuthenticatedUser, async (req, res) => {
 
 //Get All Events
 router.get('/', async (req, res) => {
-    let query = Event.find().populate('location').populate('category').populate('organizer').populate('reservations');
+    let query = Event.find().sort({ date: 'asc' }).populate('location').populate('category').populate('organizer').populate('reservations');
     if (req.query.name != null && req.query.name != '') {
         query = query.regex('name', new RegExp(req.query.name, 'i'))
     }
